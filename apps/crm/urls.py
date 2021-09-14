@@ -1,7 +1,7 @@
 from django.urls import path
-from apps.crm import views as crm_views
+from apps.crm.views import home_page
 
 urlpatterns = [
-    # path('', crm_views.main, name='main-url')
+    path('', home_page)
 
 ]
