@@ -16,7 +16,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = MyUser
-        fields = ('email',)
+        fields = ('username',)
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -40,11 +40,14 @@ class UserChangeForm(forms.ModelForm):
     the user, but replaces the password field with admin's
     disabled password hash display field.
     """
-    password = ReadOnlyPasswordHashField()
+    password = ReadOnlyPasswordHashField(label=("Password"),
+                                         help_text=("Raw passwords are not stored, so there is no way to see "
+                                                    "this user password, but you can change the password "
+                                                    "using <a href=\"../password/\">this form</a>."))
 
     class Meta:
         model = MyUser
-        fields = ('email', 'password', 'is_active', 'is_admin')
+        fields = ('username', 'email', 'password', 'is_active', 'is_staff', 'is_superuser')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -61,23 +64,23 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'is_admin', 'first_name', 'last_name', 'profile_pic')
-    list_filter = ('is_admin',)
+    list_display = ('username', 'email', 'is_staff', 'is_superuser', 'first_name', 'last_name', 'profile_picture')
+    list_filter = ('is_staff',)
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Settings', {'fields': ('first_name', 'last_name', 'profile_pic')}),
-        ('Permissions', {'fields': ('is_admin',)}),
+        (None, {'fields': ('username', 'password')}),
+        ('Settings', {'fields': ('email', 'first_name', 'last_name', 'profile_picture')}),
+        ('Permissions', {'fields': ('is_staff', 'is_superuser')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2'),
+            'fields': ('username', 'password1', 'password2'),
         }),
     )
-    search_fields = ('email',)
-    ordering = ('email',)
+    search_fields = ('username',)
+    ordering = ('username',)
     filter_horizontal = ()
 
 

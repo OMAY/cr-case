@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Профиль{% endblock %}
+{% block content %}
+
+<div class="container mb-3">
+    <div class="row">
+        <div class="col-lg-3">
+            <div>
+                <img src="{{object.profile_picture.url}}" width="200">
+            </div>
+        </div>
+        <div class="col">
+            <table class="table table-striped">
+                <tr>
+                    <th>Логин</th>
+                    <th>Имя</th>
+                    <th>Фамилия</th>
+                    <th>E-mail</th>
+                </tr>
+                <tr>
+                    <td> {{object.username}}</td>
+                    <td> {{object.first_name}}</td>
+                    <td>{{object.last_name}}</td>
+                    <td>{{object.email}}</td>
+                </tr>
+            </table>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{% url 'crm:user_update' object.pk %}" class=" btn btn-success mr-2"  role="button" data-bs-toggle="button">Изменить информацию</a>
+                <a href="{% url 'reset-password' %}" class=" btn btn-primary" role="button" data-bs-toggle="button">Сменить пароль</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container mt-3">
+    <div class="row">
+        <div class="col">
+            <div class="d-grid gap-2 d-md-block">
+                <button type="button" class="btn btn-info">Создать компанию</button>
+                <button type="button" class="btn btn-info">Добавить проект</button>
+                <button type="button" class="btn btn-info">Добавить запись</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container mt-3">
+
+
+    <div class="row">
+        <div class="col-md-4">
+            <h4>Список взаимодействий:</h4>
+        </div>
+    </div>
+</div>
+{% endblock %}
