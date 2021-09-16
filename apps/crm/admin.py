@@ -4,8 +4,8 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
-
-from .models import MyUser
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from .models import MyUser, Company, Project
 
 
 class UserCreationForm(forms.ModelForm):
@@ -16,7 +16,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = MyUser
-        fields = ('username',)
+        fields = ('username', 'is_manager')
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -47,7 +47,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = MyUser
-        fields = ('username', 'email', 'password', 'is_active', 'is_staff', 'is_superuser')
+        fields = ('username', 'email', 'password', 'is_active', 'is_staff', 'is_superuser', 'is_manager')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -64,12 +64,14 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('username', 'email', 'is_staff', 'is_superuser', 'first_name', 'last_name', 'profile_picture')
-    list_filter = ('is_staff',)
+    list_display = (
+        'username', 'email', 'is_staff', 'is_superuser', 'is_manager', 'first_name', 'last_name', 'profile_picture')
+    list_editable = ('is_staff', 'is_superuser', 'is_manager',)
+    list_filter = ('is_manager',)
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Settings', {'fields': ('email', 'first_name', 'last_name', 'profile_picture')}),
-        ('Permissions', {'fields': ('is_staff', 'is_superuser')}),
+        ('Permissions', {'fields': ('is_staff', 'is_superuser', 'is_manager')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -84,8 +86,63 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
 
+class CompanyAdminForm(forms.ModelForm):
+    sh_description = forms.CharField(widget=CKEditorUploadingWidget, )
+    description = forms.CharField(widget=CKEditorUploadingWidget, )
+
+    class Meta:
+        model = Company
+        fields = (
+            'name', 'contact', 'sh_description', 'description', u'address', 'phone', 'ad_phone_1', 'ad_phone_2', 'email',
+            'ad_email_1', 'ad_email_2', 'created_by', 'updated_by')
+
+
+class CompanyAdmin(admin.ModelAdmin):
+    form = CompanyAdminForm
+    add_form = CompanyAdminForm
+    fields = (
+        'name', 'contact', 'sh_description', 'description', 'address', 'phone', 'ad_phone_1', 'ad_phone_2', 'email',
+        'ad_email_1', 'ad_email_2', 'created_by', 'updated_by')
+    list_display = ('name', 'contact', 'date_of_create', 'date_of_change', 'created_by', 'updated_by')
+    list_display_links = ('name',)
+
+    def save_model(self, request, obj, form, change):
+        if obj.created_by is None:
+            obj.created_by = request.user
+        obj.updated_by = request.user
+        obj.save()
+
+
+
+class ProjectAdminForm(forms.ModelForm):
+
+    description = forms.CharField(widget=CKEditorUploadingWidget, )
+
+    class Meta:
+        model = Project
+        fields = (
+            'name', 'company', 'description', 'start_date', 'end_date', 'price', 'created_by', 'updated_by')
+
+
+class ProjectAdmin(admin.ModelAdmin):
+    form = CompanyAdminForm
+    add_form = CompanyAdminForm
+    fields = (
+        'name', 'company', 'description', 'start_date', 'end_date', 'price', 'created_by', 'updated_by')
+    list_display = ('name', 'company', 'start_date', 'end_date', 'price', 'created_by', 'updated_by')
+    list_display_links = ('name',)
+
+    def save_model(self, request, obj, form, change):
+        if obj.created_by is None:
+            obj.created_by = request.user
+        obj.updated_by = request.user
+        obj.save()
+
+
 # Now register the new UserAdmin...
 admin.site.register(MyUser, UserAdmin)
+admin.site.register(Company, CompanyAdmin)
+admin.site.register(Project, ProjectAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)
