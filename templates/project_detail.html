@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Подробности проекта{% endblock %}
+{% block content %}
+
+<div class="container mb-3">
+    <div class="row">
+        <div class="col">
+            <h1>Проект {{ project.name }} </h1>
+             {% if request.user.is_manager%}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{% url 'crm:project_message_list' project.pk %}" class=" btn btn-success mr-2" role="button"
+                   data-bs-toggle="button">Список сообщений проекта</a>
+            </div>
+            {% endif %}
+            <table class="table table-striped">
+                <th>Описание проекта</th>
+                <td> {{project.description|safe}}</td>
+                </tr>
+                <tr>
+                    <th>Дата начала проекта</th>
+                    <td>{{project.start_date}}</td>
+                </tr>
+                <tr>
+                    <th>Дата окончания проекта</th>
+                    {% if project.end_date %}
+                    <td>{{project.end_date}}</td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
+
+                </tr>
+                 {% if request.user.is_manager%}
+                <tr>
+                    <th>Стоимость проекта</th>
+                    <td>{{project.price}}</td>
+                </tr>
+                {% endif %}
+            </table>
+             {% if request.user.is_manager%}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{% url 'crm:project_update' project.pk %}" class=" btn btn-success mr-2" role="button"
+                   data-bs-toggle="button">Изменить информацию о проекте</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+ {% if request.user.is_manager%}
+<div class="container mt-3">
+    <div class="row">
+        <div class="col">
+            <div class="d-grid gap-2 d-md-block">
+                <a href="{% url 'crm:project_create' %}" class="btn btn-info">Добавить проект</a>
+                <a href="{% url 'crm:contact_message_create' %}" class="btn btn-info">Добавить запись</a>
+                <a href="{% url 'crm:company_detail' project.company.pk %}" class="btn btn-primary">Назад к профилю
+                    компании</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

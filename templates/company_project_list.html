@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Список записей компании{% endblock %}
+{% block content %}
+
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-4">
+            <h4>Список проектов компании:</h4>
+        </div>
+         {% if request.user.is_manager%}
+        <div class="container mt-3">
+            <div class="row">
+                <div class="col">
+                    <div class="d-grid gap-2 d-md-block">
+                        <a href="{% url 'crm:project_create' %}" class="btn btn-info">Добавить проект</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif%}
+        <div class="container-fluid ">
+            <div class="row ">
+                <div class="col mx-auto my-2">
+                    <table class="table table-striped">
+                        {% for project in object_list %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'crm:project_detail' project.pk %}">{{project.name }}</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                {% if page_obj.has_previous %}
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                {% endif %}
+            </li>
+            {% for page in page_obj.paginator.page_range %}
+            <li class="page-item {% if page == page_obj.number %}active {% endif %}">
+                <a class="page-link" href="?page={{page}}">
+                    {{page}}
+                </a>
+            </li>
+            {% endfor %}
+            <li class="page-item">
+                {% if page_obj.has_next %}
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+
+</div>
+
+
+{% endblock %}
+
+
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-4">
+            <h4>Список проектов компании:</h4>
+        </div>
+        <div class="container-fluid ">
+            <div class="row ">
+                <div class="col mx-auto my-2">
+                    <table class="table table-striped">
+                        {% for project in object_list %}
+                        {% if project.company == company %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'crm:project_detail' project.pk %}">{{project.name }}</a>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            {% if page_obj.has_previous %}
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+            {% endif %}
+        </li>
+        {% for page in page_obj.paginator.page_range %}
+        <li class="page-item {% if page == page_obj.number %}active {% endif %}">
+            <a class="page-link" href="?page={{page}}">
+                {{page}}
+            </a>
+        </li>
+        {% endfor %}
+        <li class="page-item">
+            {% if page_obj.has_next %}
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+            {% endif %}
+        </li>
+    </ul>
+</nav>

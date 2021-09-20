@@ -24,6 +24,7 @@ from apps.crm.views import logout_view, login_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('', include(('apps.crm.urls', 'crm'), namespace='crm')),
     path('login/', login_view, name='login'),

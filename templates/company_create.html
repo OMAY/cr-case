@@ -9,12 +9,11 @@
         <div class="card-body">
             <p class="card-text">
                  <form method="post"> {% csrf_token %}
-
+                {{ form.media }}
                 {{form | crispy}}
 
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <button type="submit" class="btn btn-primary mr-auto ml-15">Сохранить</button>
-                <a href="{% url 'reset-password' %}" class=" btn btn-primary" role="button" data-bs-toggle="button">Сменить пароль</a>
             </div>
 
                 </form>

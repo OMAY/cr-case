@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Изменение данных проекта{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col mx-auto">
+        <div class="card my-3">
+            <div class="card-body">
+                <p class="card-text">
+                <form method="post"> {% csrf_token %}
+                    {{ form.media }}
+                    {{form | crispy}}
+                    <strong>* Даты начала и окончания вводите в формате: ДД.ММ.ГГГГ</strong>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-primary mr-auto ml-15">Сохранить</button>
+                    </div>
+                </form>
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+

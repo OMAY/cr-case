@@ -1,15 +1,115 @@
-{% extends "base.html" %}
-{% block title %} Homepage {% endblock %}
+{% extends 'base.html' %}
+{% block title %}Список компаний{% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col"><h2 class="text-center my-3">Тест-проект CRM</h2></div>
-</div>
-<div class="row">
-    <div class="col-md-8 mx-auto">
-        <h4>Домашняя страница.</h4>
-        <h4>Скоро тут что-то появится</h4>
 
+<div class="container-fluid ">
+    <div class="row mx-auto" style="background-color: #AFD;">
+        <div class="col mx-auto my-3"><h3>Список компаний</h3></div>
+        {% if request.user.is_manager%}
+        <div class="d-grid gap-2 my-auto mr-3">
+            <a href="{% url 'crm:company_create' %}" class=" btn btn-primary ml-auto" role="button"
+               data-bs-toggle="button">
+                Добавить новую компанию
+            </a>
+            <a href="{% url 'crm:project_create' %}" class=" btn btn-primary ml-auto" role="button"
+               data-bs-toggle="button">Добавить проект</a>
+                <a href="{% url 'crm:contact_message_create' %}" class=" btn btn-primary ml-auto" role="button"
+               data-bs-toggle="button">Добавить запись</a>
+        </div>
+        {% endif %}
     </div>
 </div>
+
+<div class="container-fluid ">
+    <div class="row ">
+        <div class="col mx-auto my-2">
+            <form action="" method="get" id="sortProduct">
+
+                <div class="box sort pull-right">
+                    <span>Сортировать по названию:</span>
+                    <button value="Сортировка" class="dropdown-toggle" type="submit" data-toggle="dropdown">
+                        <span class="dropdown-label">По имени</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="menu2">
+                        <li><input type="submit" name="orderby" value="name"></li>
+                        <li><input type="submit" name="orderby" value="-name"></li>
+                    </ul>
+
+                    <div class="box sort pull-right">
+                        <span>Сортировать по дате</span>
+                        <button value="Сортировка" class="dropdown-toggle" type="submit" data-toggle="dropdown">
+                            <span class="dropdown-label">По дате</span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu2">
+                            <li><input type="submit" name="orderby" value="date_of_create"></li>
+                            <li><input type="submit" name="orderby" value="-date_of_create"></li>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container-fluid ">
+    <div class="row ">
+        <div class="col mx-auto my-2">
+            <table class="table table-striped">
+                <tr>
+                    <th>Название</th>
+                    <th>Контактное лицо</th>
+                    <th>Краткое описание</th>
+                    <th>Дата создания записи</th>
+
+                </tr>
+                {% for object in page_obj %}
+                <tr>
+                    <td>
+                        {% if request.user.is_authenticated or request.user.is_manager%}
+                        <a href="{% url 'crm:company_detail' object.pk%}">{{object.name}}</a>
+                        {% else %}
+                        {{object.name}}
+                        {% endif %}
+                    </td>
+                    <td>{{object.contact}}</td>
+                    <td>{{object.sh_description|safe}}</td>
+                    <td>{{object.date_of_create}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            {% if page_obj.has_previous %}
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+            {% endif %}
+        </li>
+        {% for page in page_obj.paginator.page_range %}
+        <li class="page-item {% if page == page_obj.number %}active {% endif %}">
+            <a class="page-link" href="?page={{page}}">
+                {{page}}
+            </a>
+        </li>
+        {% endfor %}
+        <li class="page-item">
+            {% if page_obj.has_next %}
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+            {% endif %}
+        </li>
+    </ul>
+</nav>
+
+
+
 
 {% endblock %}
