@@ -139,7 +139,6 @@ class HomeView(ListView):
 
     def get_ordering(self):
         ordering = self.request.GET.get('orderby')
-        # print(ordering)
         return ordering
 
 
