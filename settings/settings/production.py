@@ -17,7 +17,6 @@ DB_NAME = os.environ.get('DBNAME')
 DB_PASSWORD = os.environ.get('DB_PASSWORD')
 DB_HOST = os.environ.get('DB_HOST')
 DB_USER = os.environ.get('DB_USER')
-DB_PORT = os.environ.get('DB_PORT')
 # SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -98,7 +97,7 @@ DATABASES = {
         'USER': DB_USER,
         'PASSWORD': DB_PASSWORD,
         'HOST': DB_HOST,
-        'PORT': 'DB_PORT',
+        'PORT': '5432',
     }
 }
 
