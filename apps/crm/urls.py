@@ -23,6 +23,7 @@ urlpatterns = [
     path('user_update/<int:pk>/', UserUpdateView.as_view(), name='user_update'),
     path('user_detail/', UserDetailView.as_view(), name='user_detail'),
 
+
     # path('accounts/profile/', home, name=''),
 
 ]
